@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Cancel buttons redirect to main page
   document.querySelectorAll('.genz-btn-cancel').forEach(btn => {
     btn.onclick = function() {
-      window.location.href = '/'; // Change if your main page is different
+      window.location.href = 'index.html'; // Redirect to main page
     }
   });
 

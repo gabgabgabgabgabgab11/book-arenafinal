@@ -6,8 +6,8 @@
     <title>Philippine Arena Booking</title>
     <!-- Google Fonts: Nunito (rounded, modern, clean) -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet">
-    <style>
-  body {
+<style>
+    body {
         font-family: 'Nunito', Arial, sans-serif;
         margin: 0;
         padding: 0;
@@ -70,7 +70,7 @@
     }
     /* Offset for fixed nav */
     #dashboard {
-        padding-top: 100px;
+        padding-top: 90px;
     }
     .dashboard, .events, .seating, .gallery, .about, .contact {
         margin-bottom: 40px;
@@ -312,26 +312,6 @@
             height: 32vw;
             max-height: 320px;
         }
-            header nav {
-        padding: 4px 6px 4px 6px !important;
-        min-height: 0 !important;
-    }
-    .logo-img {
-        height: 28px !important;
-        margin-right: 6px !important;
-    }
-    .logo-title {
-        font-size: 1.1rem !important;
-        margin-left: 10px !important;
-    }
-    .nav-links {
-        margin-top: 2px !important;
-    }
-    .nav-links a {
-        font-size: 0.8rem !important;
-        padding: 4px 8px !important;
-        margin: 0 4px !important;
-    }
     }
     @media (max-width: 1000px) {
         .about,
@@ -375,7 +355,7 @@
             padding: 6px 10px;
         }
         #dashboard {
-            padding-top: 120px; /* Ensures nav bar does not overlap hero */
+            padding-top: 420px; /* Ensures nav bar does not overlap hero */
         }
         .dashboard {
             height: 180px;
@@ -441,26 +421,86 @@
             margin: 0 auto !important;
         }
     }
-    </style>
+
+    /* --- Hamburger menu base styles --- */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 110;
+}
+
+/* Responsive hamburger menu */
+@media (max-width: 700px) {
+  .hamburger {
+    display: block;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 55px; /* Adjust based on your header/nav height */
+    left: 0;
+    right: 0;
+    background: #686ca7;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 0;
+    z-index: 109;
+    box-shadow: 0 2px 12px rgba(80,90,140,0.18);
+  }
+  .nav-links.open {
+    display: flex;
+  }
+  header nav {
+    position: relative;
+    padding-right: 48px; /* space for hamburger */
+    min-height: 44px;
+  }
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 701px) {
+  .nav-links {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+    align-items: center;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  .hamburger {
+    display: none !important;
+  }
+}
+</style>
 </head>
 <body>
     <!-- Navigation Bar -->
-    <header>
-        <nav>
-            <div class="logo-container">
-                <img src="img/Philippine_Arena_Logo.svg" alt="Philippine Arena Logo" class="logo-img">
-                <h1 class="logo-title">Book Arena</h1>
-            </div>
-            <div class="nav-links">
-                <a href="#dashboard" class="nav-anchor" data-anchor="dashboard">Dashboard</a>
-                <a href="#upcoming-events" class="nav-anchor" data-anchor="upcoming-events">Events</a>
-                <a href="#seating" class="nav-anchor" data-anchor="seating">Seating & Prices</a>
-                <a href="#about" class="nav-anchor" data-anchor="about">About</a>
-                <a href="#contact" class="nav-anchor" data-anchor="contact">Contact</a>
-                <a href="venue.html">Venue Rental</a>
-            </div>
-        </nav>
-    </header>
+   <header>
+    <nav>
+        <div class="logo-container">
+            <img src="img/Philippine_Arena_Logo.svg" alt="Philippine Arena Logo" class="logo-img">
+            <h1 class="logo-title">Book Arena</h1>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">&#9776;</button>
+        <div class="nav-links" id="navLinks">
+            <a href="#dashboard" class="nav-anchor" data-anchor="dashboard">Dashboard</a>
+            <a href="#upcoming-events" class="nav-anchor" data-anchor="upcoming-events">Events</a>
+            <a href="#seating" class="nav-anchor" data-anchor="seating">Seating & Prices</a>
+            <a href="#about" class="nav-anchor" data-anchor="about">About</a>
+            <a href="#contact" class="nav-anchor" data-anchor="contact">Contact</a>
+            <a href="venue.html">Venue Rental</a>
+        </div>
+    </nav>
+</header>
     <section id="dashboard" class="dashboard">
         <div id="dashboardContent">
             <strong class="dashboard-title">Experience Unforgettable Events</strong>
@@ -1126,6 +1166,7 @@
     
     });
     </script>
+    <script src="hamburger.js"></script>
 </body>
 </html>
 </body>
