@@ -320,6 +320,99 @@
                 padding: 10px;
             }
         }
+
+        @media (max-width: 1000px) {
+    .about,
+    .contact {
+        flex-direction: column !important;
+        min-height: unset !important;
+    }
+    .about > div, .contact > form {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .about > div:last-child {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard {
+        height: 200px;
+        font-size: 1.2rem;
+    }
+    .dashboard-title {
+        font-size: 1.2rem;
+    }
+    .upcoming-events > div {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .dashboard {
+        height: 120px;
+        font-size: 1rem;
+    }
+    .dashboard-title {
+        font-size: 1rem;
+    }
+    .nav-links a {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+    .gallery img {
+        width: 80px;
+        height: 80px;
+    }
+    .seating th, .seating td {
+        padding: 7px 8px;
+        font-size: 0.92rem;
+    }
+    .about > div, .about img {
+        max-width: 100% !important;
+    }
+    section {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard {
+        height: 80px;
+        font-size: 0.95rem;
+    }
+    .dashboard-title {
+        font-size: 0.95rem;
+    }
+    .footer {
+        font-size: 0.8rem;
+        padding: 10px 5px;
+    }
+    .modal-content {
+        width: 97vw !important;
+        padding: 8px !important;
+    }
+    .event-card {
+        font-size: 0.92rem;
+    }
+    .upcoming-events > div {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+    .about {
+        flex-direction: column !important;
+    }
+    .about > div {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    .about img {
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -354,7 +447,7 @@
     </div>
 
         <section id="upcoming-events" class="upcoming-events">
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px;">
+       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; margin-top: 20px;">
             <!-- SB19 Event Card -->
             <div class="event-card" style="position: relative; padding-bottom: 60px;">
                 <div class="event-img-container">
