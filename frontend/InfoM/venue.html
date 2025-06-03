@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Venue Rental Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts: Poppins for a trendy vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-gradient"></div>
+  <div class="modal genz-modal">
+    <div class="modal-header genz-header">
+      <span class="modal-title">Venue Rental Application</span>
+      <span class="modal-close" id="closeModal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="tabs genz-tabs">
+        <button class="tab active" data-tab="company-info">Company Info</button>
+        <button class="tab" data-tab="event-details">Event Details</button>
+        <button class="tab" data-tab="technical-req">Tech Requirements</button>
+      </div>
+      <!-- Company Info Tab -->
+      <div class="tab-content active" id="company-info">
+        <form id="companyInfoForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="companyName">Company/Organization Name</label>
+              <input type="text" id="companyName" name="companyName" placeholder="ex. Zesty Events">
+            </div>
+            <div class="form-group">
+              <label for="orgType">Type of Organization</label>
+              <select id="orgType" name="orgType">
+                <option value="" disabled selected>Select Type</option>
+                <option value="corporation">Corporation</option>
+                <option value="nonprofit">Non-Profit</option>
+                <option value="government">Government</option>
+                <option value="individual">Individual</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessAddress">Business Address</label>
+              <input type="text" id="businessAddress" name="businessAddress" placeholder="123 Main St, City">
+            </div>
+            <div class="form-group">
+              <label for="taxId">Tax Identification Number</label>
+              <input type="text" id="taxId" name="taxId" placeholder="TIN">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactPerson">Primary Contact Person</label>
+              <input type="text" id="contactPerson" name="contactPerson" placeholder="Your Full Name">
+            </div>
+            <div class="form-group">
+              <label for="positionTitle">Position/Title</label>
+              <input type="text" id="positionTitle" name="positionTitle" placeholder="Your Role">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email" placeholder="hello@email.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="text" id="phone" name="phone" placeholder="09xx-xxx-xxxx">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="background">Company Background & Previous Events</label>
+              <textarea id="background" name="background" rows="6" placeholder="Tell us what makes your events pop!"></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn genz-btn-cancel">Cancel</button>
+            <button type="button" class="btn genz-btn-next" id="nextToEventDetails">Next</button>
+          </div>
+        </form>
+      </div>
+      <!-- Event Details Tab -->
+      <div class="tab-content" id="event-details">
+        <form id="eventDetailsForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventTitle">Event Title</label>
+              <input type="text" id="eventTitle" name="eventTitle" placeholder="ex. Summer Fest 2025">
+            </div>
+            <div class="form-group">
+              <label for="eventType">Event Type</label>
+              <select id="eventType" name="eventType">
+                <option value="" disabled selected>Select Type</option>
+                <option value="concert">Concert</option>
+                <option value="conference">Conference</option>
+                <option value="seminar">Seminar</option>
+                <option value="workshop">Workshop</option>
+                <option value="party">Party</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="eventDescription">Event Description</label>
+              <textarea id="eventDescription" name="eventDescription" rows="4" placeholder="What's the vibe? What happens at this event?"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferredDate1">Preferred Date (1st Choice)</label>
+              <input type="date" id="preferredDate1" name="preferredDate1">
+            </div>
+            <div class="form-group">
+              <label for="preferredDate2">Preferred Date (2nd Choice)</label>
+              <input type="date" id="preferredDate2" name="preferredDate2">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="preferredDate3">Preferred Date (3rd Choice)</label>
+              <input type="date" id="preferredDate3" name="preferredDate3">
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventDuration">Event Duration (days)</label>
+              <select id="eventDuration" name="eventDuration">
+                <option value="1">1 day</option>
+                <option value="2">2 days</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5+ days</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="setupDays">Setup Days Needed</label>
+              <select id="setupDays" name="setupDays">
+                <option value="1">1 day</option>
+                <option value="2">2 days</option>
+                <option value="3">3 days</option>
+                <option value="4">4 days</option>
+                <option value="5">5+ days</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expectedAttendance">Expected Attendance</label>
+              <select id="expectedAttendance" name="expectedAttendance">
+                <option value="" disabled selected>Select Range</option>
+                <option value="0-50">0-50</option>
+                <option value="51-100">51-100</option>
+                <option value="101-300">101-300</option>
+                <option value="301-1000">301-1000</option>
+                <option value="1001+">1001+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="targetAudience">Target Audience</label>
+              <input type="text" id="targetAudience" name="targetAudience" placeholder="ex. Gen Z, Families, All Ages">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn genz-btn-cancel" id="backToCompanyInfo">Back</button>
+            <button type="button" class="btn genz-btn-next" id="nextToTechReq">Next</button>
+          </div>
+        </form>
+      </div>
+      <!-- Technical Requirements Tab -->
+      <div class="tab-content" id="technical-req">
+        <form id="techReqForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="stageReq">Stage Requirements</label>
+              <textarea id="stageReq" name="stageReq" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="soundReq">Sound System Requirements</label>
+              <textarea id="soundReq" name="soundReq" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="lightingReq">Lighting Requirements</label>
+              <textarea id="lightingReq" name="lightingReq" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="seatingArrangement">Seating Arrangement</label>
+              <select id="seatingArrangement" name="seatingArrangement">
+                <option value="" disabled selected>Select Arrangement</option>
+                <option value="theater">Theater</option>
+                <option value="classroom">Classroom</option>
+                <option value="banquet">Banquet</option>
+                <option value="u-shape">U-Shape</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customSeating">Custom Seating Details (if applicable)</label>
+              <textarea id="customSeating" name="customSeating" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="facilitiesNeeded">Additional Facilities Needed</label>
+              <textarea id="facilitiesNeeded" name="facilitiesNeeded" rows="3" placeholder="Dressing rooms, VIP lounges, media rooms, etc."></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cateringReq">Catering Requirements</label>
+              <textarea id="cateringReq" name="cateringReq" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="securityReq">Security Requirements</label>
+              <textarea id="securityReq" name="securityReq" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="additionalInfo">Additional Information</label>
+              <textarea id="additionalInfo" name="additionalInfo" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="agree-row">
+            <input type="checkbox" id="agreeTerms" name="agreeTerms">
+            <label for="agreeTerms" class="agree-label">
+              I confirm that all information provided is accurate and agree to the 
+              <a href="#" target="_blank" class="terms-link">Venue Rental Terms and Conditions</a>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn genz-btn-cancel" id="backToEventDetails">Back</button>
+            <button type="submit" class="btn genz-btn-next">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="venueRentalForm.js"></script>
+</body>
+</html>
