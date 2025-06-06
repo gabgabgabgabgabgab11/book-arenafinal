@@ -167,6 +167,20 @@ app.get('/api/bookings', async (req, res) => {
   }
 });
 
+// Delete booking by ID
+app.delete('/api/bookings/:id', async (req, res) => {
+  const bookingId = req.params.id;
+  try {
+    const db = await mysql.createConnection(dbConfig);
+    await db.query('DELETE FROM bookings WHERE id = ?', [bookingId]);
+    await db.end();
+    res.json({ message: 'Booking deleted.' });
+  } catch (err) {
+    console.error('Delete booking error:', err);
+    res.status(500).json({ message: 'Failed to delete booking.' });
+  }
+});
+
 // VENUE RENTAL API (unchanged)
 app.post('/api/venue-rental', async (req, res) => {
   const data = req.body;

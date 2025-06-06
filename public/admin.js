@@ -47,18 +47,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // (Optional) Add logout link to admin nav
-    const adminNav = document.querySelector('.admin-nav');
-    if (adminNav) {
-        const logoutLink = document.createElement('a');
-        logoutLink.href = "#";
-        logoutLink.textContent = "Logout";
-        logoutLink.style.marginLeft = "22px";
-        logoutLink.onclick = function (e) {
-            e.preventDefault();
-            logout();
+    
+       const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.onclick = function() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.reload();
         };
-        adminNav.appendChild(logoutLink);
     }
 
     // --- Modal for viewing images ---
@@ -140,6 +135,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </td>
                         <td>${specialRequirements ? specialRequirements : ''}</td>
                         <td>${createdAt ? (new Date(createdAt)).toLocaleString() : ''}</td>
+                         <td>
+                        <button class="delete-booking-btn" data-id="${b.id}" style="background:#ef4444;">Delete</button>
+                        </td>
                       </tr>
                     `;
                 });
@@ -148,6 +146,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 bookingsTableBody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#d44;">Failed to load bookings.</td></tr>`;
             });
     }
+
+    document.getElementById('bookingsTableBody').onclick = function(e) {
+    if (e.target && e.target.classList.contains('delete-booking-btn')) {
+        const id = e.target.dataset.id;
+        if (confirm('Are you sure you want to delete this booking?')) {
+            fetch(`http://localhost:5000/api/bookings/${id}`, {
+                method: 'DELETE',
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Refresh table
+                loadBookingsTable();
+            })
+            .catch(() => {
+                alert('Failed to delete booking.');
+            });
+        }
+    }
+};
 
     // Only load table if logged in
     if (isLoggedIn()) loadBookingsTable();
