@@ -1,6 +1,6 @@
 # Philippine Arena Booking System
 
-This project is a full-featured web application for managing event bookings and venue rental applications for the Philippine Arena.  
+This project is a full-featured web application for managing event bookings and venue rental applications for  Philippine Arena.  
 It includes a **public-facing booking site** (for users to book tickets and apply for venue rental) and a **modern admin panel** for managing and reviewing all submissions.
 
 ---
