@@ -1,3 +1,5 @@
+require('dotenv').config(); // Ensure dotenv is loaded at the very top
+
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -7,11 +9,13 @@ const cors = require('cors');
 const app = express();
 
 // === CONFIG ===
+// Dynamically select config: use Railway env vars if present, else fallback to local
 const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'arena_booking',
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'arena_booking',
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
 };
 
 // === MIDDLEWARE ===
@@ -247,5 +251,5 @@ app.get('*', (req, res) => {
 // === START SERVER ===
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Backend (contacts, bookings, venue rental) running on http://localhost:${PORT}`);
+  console.log(`Backend (contacts, bookings, venue rental) running on port ${PORT}`);
 });
