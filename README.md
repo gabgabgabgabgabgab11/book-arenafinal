@@ -1,6 +1,7 @@
 # Philippine Arena Booking System
 
-A web application for booking arena events, submitting venue rental applications, and handling customer inquiries.
+This project is a full-featured web application for managing event bookings and venue rental applications for the Philippine Arena.  
+It includes a **public-facing booking site** (for users to book tickets and apply for venue rental) and a **modern admin panel** for managing and reviewing all submissions.
 
 ---
 
@@ -191,60 +192,28 @@ END
     npm install
     ```
 
-### 3. Set up Environment Variables
+2. **Set up the database:**
+    - Create the `arena_booking` MySQL database.
+    - Run the table and stored procedure scripts (db_schema.sql).
+    - Ensure the `uploads` folder exists and is writable.
 
-- The repository expects a `.env` file in the `backend/` directory.
-- Example `.env` variables you might need (do **not** commit secrets to GitHub):
+3. **Run the backend:**
+    ```s
+    Open Terminal
+    cd backend
+    
+    node server.js
+    or
+    npm start
+    ```
+    The API and static files will be served at [http://localhost:5000](http://localhost:5000).
 
-  ```
-  DB_HOST=localhost
-  DB_USER=your_username
-  DB_PASSWORD=your_password
-  DB_NAME=arena_booking
-  ```
+4. **Access the application:**
+    - **Public Booking Site:** [http://localhost:5000/index.html](http://localhost:5000/index.html)
+    - **Admin Dashboard:** [http://localhost:5000/admin.html](http://localhost:5000/admin.html)  
+      (Login credentials are set in `admin.js`)
 
-### 4. Set up the Database
 
-- Import `db_schema.sql` into your MySQL server to create the necessary tables.
-
-### 5. Start the Backend Server
-
-```bash
-npm start
-```
-or
-```bash
-node app.js
-```
-
-### 6. Open the Frontend
-
-- Open `frontend/InfoM/index.html` in your browser to use the application.
-
----
-
-## Usage
-
-- **Book an Event:** Go to the booking page and fill out the form with event details.
-- **Venue Rental:** On the venue rental page, complete the application form.
-- **Contact:** Use the contact form for questions or feedback.
-
----
-
-## Folder Overview
-
-- `backend/` – Node.js/Express server, routes, database logic, and configuration
-- `frontend/InfoM/` – Static website files (HTML, CSS, JS, images)
-- `.gitignore` – Ensures `node_modules`, `.env`, and other sensitive or generated files are not tracked
-
----
-
-## Security & Best Practices
-
-- **Never commit your `.env` file** or any secrets to GitHub. The `.gitignore` file ensures this is not tracked.
-- **Do not upload `node_modules/`** — use `npm install` to regenerate dependencies.
-
----
 
 ## Contributing
 

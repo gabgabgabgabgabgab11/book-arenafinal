@@ -1,21 +1,53 @@
+-- DATABASE CREATION
 CREATE DATABASE IF NOT EXISTS arena_booking;
 USE arena_booking;
 
+-- ===================
+-- 1. USERS & LOOKUP TABLES
+-- ===================
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(64)
+);
+
+CREATE TABLE IF NOT EXISTS payment_methods (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  method VARCHAR(64) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS seating_types (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  type VARCHAR(64) NOT NULL UNIQUE
+);
+
+INSERT IGNORE INTO payment_methods (method) VALUES ('cash'), ('credit_card'), ('paypal'), ('gcash');
+INSERT IGNORE INTO seating_types (type) VALUES ('theater'), ('classroom'), ('banquet'), ('u-shape'), ('custom');
+
+-- ===================
+-- 2. BOOKINGS TABLE (normalized)
+-- ===================
 CREATE TABLE IF NOT EXISTS bookings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     event_name VARCHAR(255),
     event_date VARCHAR(255),
-    seating_type VARCHAR(100),
     ticket_amount INT,
     special_requirements TEXT,
-    full_name VARCHAR(255),
-    email VARCHAR(255),
-    phone_no VARCHAR(50),
-    payment_method VARCHAR(50),
-    id_image VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id_image VARCHAR(255), -- stores file path, not the image itself
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,
+    payment_method_id INT,
+    seating_type_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (payment_method_id) REFERENCES payment_methods(id),
+    FOREIGN KEY (seating_type_id) REFERENCES seating_types(id)
 );
 
+-- ===================
+-- 3. CONTACTS TABLE
+-- ===================
 CREATE TABLE IF NOT EXISTS contacts (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255),
@@ -27,7 +59,10 @@ CREATE TABLE IF NOT EXISTS contacts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE venue_rental_applications (
+-- ===================
+-- 4. VENUE RENTAL APPLICATIONS (standalone, not normalized for users)
+-- ===================
+CREATE TABLE IF NOT EXISTS venue_rental_applications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   company_name VARCHAR(255) NOT NULL,
   org_type VARCHAR(100) NOT NULL,
@@ -61,42 +96,74 @@ CREATE TABLE venue_rental_applications (
   submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert booking stored procedure
-DELIMITER //
+-- ===================
+-- 5. STORED PROCEDURES
+-- ===================
+
+-- BOOKING INSERTION
+DELIMITER $$
 CREATE PROCEDURE insert_booking(
   IN eventName VARCHAR(255),
-  IN eventDate DATE,
-  IN seatingType VARCHAR(255),
+  IN eventDate VARCHAR(255),
   IN ticketAmount INT,
   IN specialRequirements TEXT,
-  IN fullName VARCHAR(255),
-  IN email VARCHAR(255),
-  IN phoneNo VARCHAR(255),
-  IN paymentMethod VARCHAR(255),
-  IN idImagePath VARCHAR(255)
+  IN idImagePath VARCHAR(255),
+  IN userId INT,
+  IN paymentMethodId INT,
+  IN seatingTypeId INT
 )
 BEGIN
   INSERT INTO bookings (
-    event_name, event_date, seating_type, ticket_amount, 
-    special_requirements, full_name, email, phone_no, payment_method, id_image
+    event_name, event_date, ticket_amount, special_requirements, id_image, user_id, payment_method_id, seating_type_id
   )
   VALUES (
-    eventName, eventDate, seatingType, ticketAmount, specialRequirements,
-    fullName, email, phoneNo, paymentMethod, idImagePath
+    eventName, eventDate, ticketAmount, specialRequirements, idImagePath, userId, paymentMethodId, seatingTypeId
   );
-END //
+END $$
 DELIMITER ;
 
--- Fetch all bookings stored procedure
-DELIMITER //
+-- GET ALL BOOKINGS
+DELIMITER $$
 CREATE PROCEDURE get_all_bookings()
 BEGIN
-  SELECT * FROM bookings;
-END //
+  SELECT b.*, 
+         u.full_name, u.email, u.phone,
+         pm.method AS payment_method,
+         st.type AS seating_type
+    FROM bookings b
+    LEFT JOIN users u ON b.user_id = u.id
+    LEFT JOIN payment_methods pm ON b.payment_method_id = pm.id
+    LEFT JOIN seating_types st ON b.seating_type_id = st.id;
+END $$
+DELIMITER ;
+DELIMITER $$
+
+CREATE PROCEDURE get_full_bookings()
+BEGIN
+  SELECT 
+    bookings.id,
+    bookings.event_name,
+    bookings.event_date,
+    bookings.ticket_amount,
+    bookings.special_requirements,
+    bookings.id_image,
+    bookings.created_at,
+    users.full_name,
+    users.email,
+    users.phone,
+    payment_methods.method AS payment_method,
+    seating_types.type AS seating_type
+  FROM bookings
+  LEFT JOIN users ON bookings.user_id = users.id
+  LEFT JOIN payment_methods ON bookings.payment_method_id = payment_methods.id
+  LEFT JOIN seating_types ON bookings.seating_type_id = seating_types.id
+  ORDER BY bookings.id DESC;
+END$$
+
 DELIMITER ;
 
-
-DELIMITER //
+-- CONTACT INSERTION
+DELIMITER $$
 CREATE PROCEDURE insert_contact(
   IN name VARCHAR(255),
   IN email VARCHAR(255),
@@ -112,19 +179,18 @@ BEGIN
   VALUES (
     name, email, phone, countryCode, inquiryType, message
   );
-END //
+END $$
 DELIMITER ;
 
--- Fetch all contacts stored procedure
-DELIMITER //
+-- GET ALL CONTACTS
+DELIMITER $$
 CREATE PROCEDURE get_all_contacts()
 BEGIN
   SELECT * FROM contacts;
-END //
+END $$
 DELIMITER ;
 
-
-
+-- VENUE RENTAL APPLICATION INSERTION
 DELIMITER $$
 CREATE PROCEDURE insert_venue_rental_application(
   IN companyName VARCHAR(255), IN orgType VARCHAR(100), IN businessAddress VARCHAR(255), IN taxId VARCHAR(100),
@@ -155,11 +221,62 @@ BEGIN
     facilitiesNeeded, cateringReq, securityReq, additionalInfo, agreeTerms
   );
 END $$
+DELIMITER ;
 
-
+-- GET ALL VENUE RENTAL APPLICATIONS
+DELIMITER $$
 CREATE PROCEDURE get_all_venue_rental_applications()
 BEGIN
     SELECT * FROM venue_rental_applications;
 END $$
+DELIMITER ;
 
+-- Get or create user by email
+DELIMITER $$
+CREATE PROCEDURE get_or_create_user(
+  IN full_name VARCHAR(255),
+  IN email VARCHAR(255),
+  IN phone VARCHAR(64)
+)
+BEGIN
+  DECLARE uid INT;
+  SELECT id INTO uid FROM users WHERE users.email = email LIMIT 1;
+  IF uid IS NULL THEN
+    INSERT INTO users (full_name, email, phone) VALUES (full_name, email, phone);
+    SET uid = LAST_INSERT_ID();
+  END IF;
+  SELECT uid AS id;
+END $$
+DELIMITER ;
+
+-- Get or create payment method
+DELIMITER $$
+CREATE PROCEDURE get_or_create_payment_method(
+  IN method_val VARCHAR(64)
+)
+BEGIN
+  DECLARE pmid INT;
+  SELECT id INTO pmid FROM payment_methods WHERE method = method_val LIMIT 1;
+  IF pmid IS NULL THEN
+    INSERT INTO payment_methods (method) VALUES (method_val);
+    SET pmid = LAST_INSERT_ID();
+  END IF;
+  SELECT pmid AS id;
+END $$
+DELIMITER ;
+
+-- Get or create seating type
+DELIMITER $$
+CREATE PROCEDURE get_or_create_seating_type(
+  IN type_val VARCHAR(64)
+)
+BEGIN
+  DECLARE stid INT;
+  SELECT id INTO stid FROM seating_types WHERE type = type_val LIMIT 1;
+  IF stid IS NULL THEN
+    INSERT INTO seating_types (type) VALUES (type_val);
+    SET stid = LAST_INSERT_ID();
+  END IF;
+  SELECT stid AS id;
+END $$
 DELIMITER ;
