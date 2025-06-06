@@ -1,342 +1,179 @@
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --primary-light: #3b82f6;
-    --text: #1e293b;
-    --border: #e5e7eb;
-    --background: #f6f8fa;
-    --table-bg: #fff;
-    --table-alt: #f3f6fa;
-    --shadow: 0 2px 16px #2563eb22;
-    --radius: 14px;
-}
-
 body {
+    background: #f5f7fa;
+    font-family: 'Nunito', Arial, sans-serif;
     margin: 0;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    background: var(--background);
-    color: var(--text);
-    min-height: 100vh;
 }
 
-.admin-header {
-    width: 100vw;
-    background: #6d72ad;
+header.admin-header {
+    background: #fff;
+    box-shadow: 0 2px 12px #0001;
+    padding: 16px 40px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 32px;
-    height: 90px;
-    box-sizing: border-box;
+    align-items: center;
 }
 
 .admin-header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
 }
 
 .arena-logo {
-    height: 60px;
-    width: auto;
-    display: block;
+    height: 54px;
+    margin-right: 16px;
 }
 
 .admin-title {
-    color: #fff;
     font-size: 2.1em;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    margin-left: 16px;
+    font-weight: 800;
+    color: #2563eb;
+    letter-spacing: 1px;
 }
 
 .admin-header-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
 }
 
 .header-btn {
-    font-size: 1.1em;
-    color: #fff;
-    background: rgba(255,255,255,0.16);
+    padding: 9px 18px;
+    background: #2563eb;
+    color: #fff !important;
     border: none;
-    border-radius: 8px;
-    padding: 10px 26px;
-    margin-left: 10px;
-    cursor: pointer;
+    border-radius: 7px;
+    font-size: 1em;
     font-weight: 600;
     text-decoration: none;
-    transition: background 0.18s, color 0.18s;
-    outline: none;
-    box-shadow: none;
-    display: inline-block;
-}
-.header-btn:hover, .header-btn:focus {
-    background: rgba(255,255,255,0.32);
-    color: #222;
+    cursor: pointer;
+    transition: background 0.18s;
 }
 
-@media (max-width: 700px) {
-    .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-        height: auto;
-        padding: 16px;
-        gap: 8px;
-    }
-    .admin-title {
-        font-size: 1.2em;
-        margin-left: 8px;
-    }
-    .arena-logo {
-        height: 38px;
-    }
-    .admin-header-right {
-        width: 100%;
-        justify-content: flex-end;
-    }
+.header-btn:hover {
+    background: #133c84;
 }
 
 main {
-    padding-top: 44px;
-    padding-bottom: 44px;
-    max-width: 1200px;
     margin: 0 auto;
 }
 
 h1 {
     font-size: 2.2em;
-    margin-bottom: 32px;
-    letter-spacing: 1.2px;
-    color: var(--primary-dark);
     font-weight: 800;
-    text-shadow: 0 4px 12px #2563eb0d;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
 }
 
-table {
+.admin-table-container {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px #0001;
+    padding: 34px 24px;
+    margin-bottom: 45px;
     width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 1400px;
     border-collapse: separate;
     border-spacing: 0;
-    background: var(--table-bg);
-    box-shadow: var(--shadow);
-    border-radius: var(--radius);
-    overflow: hidden;
-}
-
-th, td {
-    padding: 14px 12px;
-    text-align: left;
     font-size: 1.06em;
-    border-bottom: 1px solid var(--border);
+    background: #fff;
 }
 
-th {
-    background: var(--table-alt);
+.admin-table th, .admin-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: top;
+    word-break: break-word;
+    white-space: pre-line;
+}
+
+.admin-table th {
+    background: #f3f6fa;
+    color: #2563eb;
     font-weight: 700;
-    color: var(--primary);
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid var(--primary);
+    font-size: 1.02em;
+    border-top: none;
+    border-bottom: 2px solid #2563eb;
+    letter-spacing: 0.03em;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
-tr:last-child td {
-    border-bottom: none;
+.admin-table tr:nth-child(even) td {
+    background: #f8fafc;
 }
 
-tr:nth-child(even) {
-    background: #f7faff;
-}
-
-tr:hover {
-    background: #e4edfb;
+.admin-table tr:hover td {
+    background: #eaf1fe;
     transition: background 0.2s;
 }
 
-td {
-    font-size: 1em;
+.admin-table td, .admin-table th {
+    /* Widen all columns & allow wrapping */
+    min-width: 120px;
+    max-width: 340px;
 }
 
-.delete-booking-btn {
-    background: #ef4444 !important;
+/* Delete button styling for ALL tables */
+.delete-booking-btn,
+.delete-contact-btn,
+.delete-venue-btn {
     color: #fff;
+    background: #ef4444;
     border: none;
-    border-radius: 7px;
-    padding: 7px 18px;
-    cursor: pointer;
+    padding: 7px 13px;
+    border-radius: 6px;
     font-weight: 600;
-    transition: background 0.16s;
-}
-.delete-booking-btn:hover {
-    background: #b91c1c !important;
-}
-
-button, input[type="submit"] {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    padding: 10px 26px;
-    font-size: 1.05em;
-    border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
-    margin-top: 4px;
-    box-shadow: 0 2px 10px #2563eb19;
-    transition: background 0.16s, box-shadow 0.16s;
-}
-button:hover, input[type="submit"]:hover {
-    background: var(--primary-dark);
-    box-shadow: 0 4px 18px #3b82f633;
-}
-
-input[type="text"], input[type="password"] {
-    font-size: 1.1em;
-    padding: 10px 12px;
-    margin-bottom: 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
+    font-size: 0.98em;
+    transition: background 0.12s, box-shadow 0.12s;
+    box-shadow: 0 1px 4px #d44a2f22;
     outline: none;
-    background: #f1f5ff;
-    transition: border 0.2s, box-shadow 0.2s;
-}
-input:focus {
-    border: 1.7px solid var(--primary);
-    background: #fff;
-    box-shadow: 0 2px 10px #2563eb19;
+    margin: 0 2px;
+    display: inline-block;
 }
 
-#loginOverlay {
-    display: none;
-    position: fixed;
-    z-index: 10000;
-    left: 0; top: 0; width: 100vw; height: 100vh;
-    background: rgba(37,99,235,0.08);
-    justify-content: center;
-    align-items: center;
+.delete-booking-btn:hover,
+.delete-contact-btn:hover,
+.delete-venue-btn:hover {
+    background: #b91c1c;
+    box-shadow: 0 2px 12px #ef444455;
 }
 
-#loginForm {
-    background: #fff;
-    padding: 36px 28px 28px 28px;
-    border-radius: var(--radius);
-    box-shadow: 0 6px 28px #2563eb22;
-    display: flex;
-    flex-direction: column;
-    min-width: 320px;
-    gap: 2px;
-    border-top: 4px solid var(--primary);
-}
-
-#loginForm h2 {
-    text-align: center;
-    margin-bottom: 14px;
-    color: var(--primary-dark);
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-#errorMessage {
-    color: #d44;
-    display: none;
-    margin-top: 8px;
-    text-align: center;
-    font-size: 1em;
-}
-
-#imageModal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0; top: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(37,99,235,0.2);
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    animation: fadeIn 0.3s;
-}
-
-#imageModal img {
-    max-width: 85vw;
-    max-height: 85vh;
-    border: 6px solid #fff;
-    border-radius: 18px;
-    background: #fff;
-    box-shadow: 0 8px 36px #2563eb29;
-    margin-bottom: 10px;
-    animation: popIn 0.22s;
-}
-
-#closeModal {
-    position: absolute;
-    top: 40px;
-    right: 60px;
-    color: var(--primary-dark);
-    font-size: 2.5em;
-    font-weight: bold;
-    cursor: pointer;
-    text-shadow: 0 4px 16px #2563eb44;
-    transition: color 0.16s;
-}
-#closeModal:hover {
-    color: #ef4444;
-}
-
-a {
-    color: var(--primary-dark);
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.15s;
-}
-a:hover {
-    color: var(--primary);
-}
-
-@media (max-width: 1000px) {
-    main {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-    .admin-nav {
-        padding: 16px 10px 11px 10px;
-        font-size: 1em;
-    }
-    h1 {
-        font-size: 1.1em;
-    }
-    table {
-        font-size: 0.96em;
-    }
-    #loginForm {
-        min-width: unset;
-        width: 92vw;
-        max-width: 370px;
-    }
-    #imageModal img {
-        max-width: 98vw;
-        max-height: 65vh;
-    }
-}
-
-@media (max-width: 600px) {
-    th, td {
-        padding: 7px 4px;
+@media (max-width: 1700px) {
+    .admin-table, .admin-table th, .admin-table td {
         font-size: 0.98em;
+        min-width: 100px;
+        max-width: 290px;
     }
-    main {
-        padding: 5px;
-    }
-    #loginForm {
-        padding: 20px 4vw 12px 4vw;
-        min-width: 0;
-        max-width: 98vw;
+    .admin-table-container {
+        padding: 20px 8px;
     }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+@media (max-width: 1200px) {
+    .admin-table, .admin-table th, .admin-table td {
+        font-size: 0.94em;
+        min-width: 85px;
+        max-width: 200px;
+    }
+    .admin-table-container {
+        padding: 10px 2px;
+    }
 }
-@keyframes popIn {
-    from { transform: scale(0.95); opacity: 0.25;}
-    to   { transform: scale(1); opacity: 1;}
+
+::-webkit-scrollbar {
+    height: 8px;
+    background: #f2f2f2;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #b6c6e7;
+    border-radius: 6px;
 }

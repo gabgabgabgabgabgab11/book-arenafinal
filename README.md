@@ -213,8 +213,6 @@ END
     - **Admin Dashboard:** [http://localhost:5000/admin.html](http://localhost:5000/admin.html)  
       (Login credentials are set in `admin.js`)
 
-
-
 ## Contributing
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.

@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Dynamic API base URL for localhost or Railway
+  const API_BASE_URL = window.location.hostname.includes("railway.app")
+    ? "https://book-arenafinal-production.up.railway.app"
+    : "http://localhost:5000";
+
   // Tab switching logic
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function () {
@@ -110,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
       };
 
       try {
-        const response = await fetch('http://localhost:5000/api/venue-rental', {
+        const response = await fetch(`${API_BASE_URL}/api/venue-rental`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)

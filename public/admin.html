@@ -13,7 +13,7 @@
         <span class="admin-title">Admin Page</span>
     </div>
     <div class="admin-header-right">
-        <a href="/index.html" class="header-btn">Back to Main Site</a>
+        <a href="/public/index.html" class="header-btn">Back to Main Site</a>
         <button id="logoutBtn" class="header-btn">Logout</button>
     </div>
 </header>
@@ -30,12 +30,12 @@
     </form>
 </div>
     <!-- Main Content -->
-    <main style="padding: 30px; max-width: 1200px; margin: 0 auto;">
+    <main style="padding: 30px; max-width: 1800px; margin: 0 auto;">
         <h1 style="text-align:center;color:#2563eb;">All Bookings</h1>
-        <div style="overflow-x:auto;background:#fff;border-radius:16px;box-shadow:0 2px 16px #0001;padding:28px;">
-            <table style="width:100%;border-collapse:collapse;min-width:900px;">
+        <div class="admin-table-container">
+            <table class="admin-table">
                 <thead>
-                    <tr style="background:#f3f6fa;">
+                    <tr>
                         <th>#</th>
                         <th>Booking ID</th>
                         <th>Event Name</th>
@@ -53,7 +53,61 @@
                     </tr>
                 </thead>
                 <tbody id="bookingsTableBody">
-                    <tr><td colspan="13" style="text-align:center; color:#aaa;">Loading...</td></tr>
+                    <tr><td colspan="14" style="text-align:center; color:#aaa;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- All Contacts Table -->
+        <h1 style="text-align:center;color:#2563eb;margin-top:40px;">All Contacts</h1>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Contact ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Inquiry Type</th>
+                        <th>Message</th>
+                        <th>Submitted At</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTableBody">
+                    <tr><td colspan="9" style="text-align:center; color:#aaa;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- All Venue Rental Applications Table -->
+        <h1 style="text-align:center;color:#2563eb;margin-top:40px;">All Venue Rental Applications</h1>
+        <div class="admin-table-container">
+            <table class="admin-table" id="venueRentalTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Application ID</th>
+                        <th>Company Name</th>
+                        <th>Contact Person</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Event Title</th>
+                        <th>Event Type</th>
+                        <th>Preferred Dates</th>
+                        <th>Expected Attendance</th>
+                        <th>Stage</th>
+                        <th>Sound</th>
+                        <th>Lighting</th>
+                        <th>Catering</th>
+                        <th>Security</th>
+                        <th>Submitted At</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="venueRentalTableBody">
+                    <tr><td colspan="17" style="text-align:center; color:#aaa;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>

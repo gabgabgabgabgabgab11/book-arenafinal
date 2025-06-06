@@ -1,5 +1,8 @@
-// --- Simple front-end login system for admin page ---
 document.addEventListener('DOMContentLoaded', function () {
+    const API_BASE_URL = window.location.hostname.includes("railway.app")
+        ? "https://book-arenafinal-production.up.railway.app"
+        : "http://localhost:5000";
+
     const ADMIN_USERNAME = "admin";
     const ADMIN_PASSWORD = "password123";
 
@@ -7,24 +10,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.getElementById('errorMessage');
 
-    // Simple session with localStorage (so reload doesn't show login again until tab closes)
+    // Simple session with localStorage
     function isLoggedIn() {
         return localStorage.getItem('adminLoggedIn') === 'true';
     }
     function setLoggedIn() {
         localStorage.setItem('adminLoggedIn', 'true');
     }
-    function logout() {
-        localStorage.removeItem('adminLoggedIn');
-        window.location.reload();
-    }
 
     if (!isLoggedIn()) {
-        // Show login overlay
         loginOverlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     } else {
-        // Hide login overlay
         if (loginOverlay) loginOverlay.style.display = 'none';
         document.body.style.overflow = '';
     }
@@ -40,15 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 setLoggedIn();
                 loginOverlay.style.display = 'none';
                 document.body.style.overflow = '';
-                // Optionally, you can show a success message here before hiding overlay
             } else {
                 errorMessage.style.display = "block";
             }
         }
     }
 
-    
-       const logoutBtn = document.getElementById('logoutBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.onclick = function() {
             localStorage.removeItem('adminLoggedIn');
@@ -57,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Modal for viewing images ---
-    // Insert modal HTML if not present
     if (!document.getElementById('imageModal')) {
         const modalHtml = `
         <div id="imageModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); justify-content:center; align-items:center;">
@@ -83,38 +77,36 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // --- Bookings table code with correct property names and working image links ---
+    // --- Bookings table code ---
     function loadBookingsTable() {
         const bookingsTableBody = document.getElementById('bookingsTableBody');
-        fetch('http://localhost:5000/api/bookings')
+        fetch(`${API_BASE_URL}/api/bookings`)
             .then(res => res.json())
             .then(bookings => {
                 bookingsTableBody.innerHTML = '';
                 if (!bookings.length) {
-                    bookingsTableBody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#aaa;">No bookings found.</td></tr>`;
+                    bookingsTableBody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:#aaa;">No bookings found.</td></tr>`;
                     return;
                 }
                 bookings.forEach((b, idx) => {
-                    // Use the exact keys coming from your backend's stored procedure
-                    const eventName = b.event_name || '';
-                    const eventDate = b.event_date || '';
-                    const seatingType = b.seating_type || '';
-                    const ticketAmount = b.ticket_amount || '';
-                    const fullName = b.full_name || '';
+                    const eventName = b.event_name || b.eventName || '';
+                    const eventDate = b.event_date || b.eventDate || '';
+                    const seatingType = b.seating_type || b.seatingType || '';
+                    const ticketAmount = b.ticket_amount || b.ticketAmount || '';
+                    const fullName = b.full_name || b.fullName || '';
                     const email = b.email || '';
                     const phone = b.phone || '';
-                    const paymentMethod = b.payment_method || '';
-                    const idImage = b.id_image || '';
-                    const specialRequirements = b.special_requirements || '';
-                    const createdAt = b.created_at || '';
+                    const paymentMethod = b.payment_method || b.paymentMethod || '';
+                    const idImage = b.id_image || b.idImage || '';
+                    const specialRequirements = b.special_requirements || b.specialRequirements || '';
+                    const createdAt = b.created_at || b.bookedAt || b.createdAt || '';
 
-                    // id_image already returned as `/uploads/filename.ext` by the backend
                     let idImageUrl = '';
                     if (idImage) {
                         if (idImage.startsWith('http')) {
                             idImageUrl = idImage;
                         } else {
-                            idImageUrl = `http://localhost:5000${idImage}`;
+                            idImageUrl = `${API_BASE_URL}${idImage}`;
                         }
                     }
 
@@ -135,50 +127,193 @@ document.addEventListener('DOMContentLoaded', function () {
                         </td>
                         <td>${specialRequirements ? specialRequirements : ''}</td>
                         <td>${createdAt ? (new Date(createdAt)).toLocaleString() : ''}</td>
-                         <td>
-                        <button class="delete-booking-btn" data-id="${b.id}" style="background:#ef4444;">Delete</button>
+                        <td>
+                            <button class="delete-booking-btn" data-id="${b.id}" style="background:#ef4444;">Delete</button>
                         </td>
                       </tr>
                     `;
                 });
             })
             .catch(() => {
-                bookingsTableBody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#d44;">Failed to load bookings.</td></tr>`;
+                bookingsTableBody.innerHTML = `<tr><td colspan="14" style="text-align:center; color:#d44;">Failed to load bookings.</td></tr>`;
             });
     }
 
-    document.getElementById('bookingsTableBody').onclick = function(e) {
-    if (e.target && e.target.classList.contains('delete-booking-btn')) {
-        const id = e.target.dataset.id;
-        if (confirm('Are you sure you want to delete this booking?')) {
-            fetch(`http://localhost:5000/api/bookings/${id}`, {
-                method: 'DELETE',
-            })
+    // --- Contacts table code ---
+    function loadContactsTable() {
+        const contactsTableBody = document.getElementById('contactsTableBody');
+        fetch(`${API_BASE_URL}/api/contacts`)
             .then(res => res.json())
-            .then(data => {
-                // Refresh table
-                loadBookingsTable();
+            .then(contacts => {
+                contactsTableBody.innerHTML = '';
+                if (!contacts.length) {
+                    contactsTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#aaa;">No contacts found.</td></tr>`;
+                    return;
+                }
+                contacts.forEach((c, idx) => {
+                    const name = c.name || '';
+                    const email = c.email || '';
+                    const phone = (c.countryCode ? (c.countryCode + " ") : "") + (c.phone || '');
+                    const inquiryType = c.inquiryType || c.inquiry_type || '';
+                    const message = c.message || '';
+                    const createdAt = c.created_at || c.createdAt || '';
+                    contactsTableBody.innerHTML += `
+                      <tr>
+                        <td>${idx + 1}</td>
+                        <td>${c.id}</td>
+                        <td>${name}</td>
+                        <td>${email}</td>
+                        <td>${phone}</td>
+                        <td>${inquiryType}</td>
+                        <td>${message}</td>
+                        <td>${createdAt ? (new Date(createdAt)).toLocaleString() : ''}</td>
+                        <td>
+                            <button class="delete-contact-btn" data-id="${c.id}" style="background:#ef4444;">Delete</button>
+                        </td>
+                      </tr>
+                    `;
+                });
             })
             .catch(() => {
-                alert('Failed to delete booking.');
+                contactsTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#d44;">Failed to load contacts.</td></tr>`;
             });
-        }
     }
-};
 
-    // Only load table if logged in
-    if (isLoggedIn()) loadBookingsTable();
+    // --- Venue Rental Applications table code ---
+    function loadVenueRentalTable() {
+        const venueRentalTableBody = document.getElementById('venueRentalTableBody');
+        fetch(`${API_BASE_URL}/api/venue-rental`)
+            .then(res => res.json())
+            .then(applications => {
+                venueRentalTableBody.innerHTML = '';
+                if (!applications.length) {
+                    venueRentalTableBody.innerHTML = `<tr><td colspan="17" style="text-align:center; color:#aaa;">No venue rental applications found.</td></tr>`;
+                    return;
+                }
+                applications.forEach((app, idx) => {
+                    const company_name = app.company_name || '';
+                    const contact_person = app.contact_person || '';
+                    const email = app.email || '';
+                    const phone = app.phone || '';
+                    const event_title = app.event_title || '';
+                    const event_type = app.event_type || '';
+                    // Format preferred dates to remove the time part, show only YYYY-MM-DD if present
+                    const formatDate = (dt) => dt ? (typeof dt === 'string' ? dt.split('T')[0] : new Date(dt).toISOString().split('T')[0]) : '';
+                    const preferred_dates = [app.preferred_date_1, app.preferred_date_2, app.preferred_date_3]
+                        .filter(Boolean)
+                        .map(formatDate)
+                        .join('<br>');
+                    const expected_attendance = app.expected_attendance || '';
+                    const stage_req = app.stage_req || '';
+                    const sound_req = app.sound_req || '';
+                    const lighting_req = app.lighting_req || '';
+                    const catering_req = app.catering_req || '';
+                    const security_req = app.security_req || '';
+                    const submitted_at = app.submitted_at || '';
 
-    // If login just succeeded, load table as well
+                    venueRentalTableBody.innerHTML += `
+                      <tr>
+                        <td>${idx + 1}</td>
+                        <td>${app.id || ''}</td>
+                        <td>${company_name}</td>
+                        <td>${contact_person}</td>
+                        <td>${email}</td>
+                        <td>${phone}</td>
+                        <td>${event_title}</td>
+                        <td>${event_type}</td>
+                        <td>${preferred_dates}</td>
+                        <td>${expected_attendance}</td>
+                        <td>${stage_req}</td>
+                        <td>${sound_req}</td>
+                        <td>${lighting_req}</td>
+                        <td>${catering_req}</td>
+                        <td>${security_req}</td>
+                        <td>${submitted_at ? (new Date(submitted_at)).toLocaleString() : ''}</td>
+                        <td>
+                            <button class="delete-venue-btn" data-id="${app.id}" style="background:#ef4444;">Delete</button>
+                        </td>
+                      </tr>
+                    `;
+                });
+            })
+            .catch(() => {
+                venueRentalTableBody.innerHTML = `<tr><td colspan="17" style="text-align:center; color:#d44;">Failed to load venue rental applications.</td></tr>`;
+            });
+    }
+
+    // --- Delete handlers for all tables ---
+    document.getElementById('bookingsTableBody').onclick = function(e) {
+        if (e.target && e.target.classList.contains('delete-booking-btn')) {
+            const id = e.target.dataset.id;
+            if (confirm('Are you sure you want to delete this booking?')) {
+                fetch(`${API_BASE_URL}/api/bookings/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(res => res.json())
+                .then(() => {
+                    loadBookingsTable();
+                })
+                .catch(() => {
+                    alert('Failed to delete booking.');
+                });
+            }
+        }
+    };
+
+    document.getElementById('contactsTableBody').onclick = function(e) {
+        if (e.target && e.target.classList.contains('delete-contact-btn')) {
+            const id = e.target.dataset.id;
+            if (confirm('Are you sure you want to delete this contact?')) {
+                fetch(`${API_BASE_URL}/api/contacts/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(res => res.json())
+                .then(() => {
+                    loadContactsTable();
+                })
+                .catch(() => {
+                    alert('Failed to delete contact.');
+                });
+            }
+        }
+    };
+
+    document.getElementById('venueRentalTableBody').onclick = function(e) {
+        if (e.target && e.target.classList.contains('delete-venue-btn')) {
+            const id = e.target.dataset.id;
+            if (confirm('Are you sure you want to delete this venue rental application?')) {
+                fetch(`${API_BASE_URL}/api/venue-rental/${id}`, {
+                    method: 'DELETE',
+                })
+                .then(res => res.json())
+                .then(() => {
+                    loadVenueRentalTable();
+                })
+                .catch(() => {
+                    alert('Failed to delete venue rental application.');
+                });
+            }
+        }
+    };
+
+    if (isLoggedIn()) {
+        loadBookingsTable();
+        loadContactsTable();
+        loadVenueRentalTable();
+    }
+
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             if (document.getElementById('username').value === ADMIN_USERNAME &&
                 document.getElementById('password').value === ADMIN_PASSWORD) {
-                setTimeout(loadBookingsTable, 250);
+                setTimeout(() => {
+                    loadBookingsTable();
+                    loadContactsTable();
+                    loadVenueRentalTable();
+                }, 250);
             }
         });
     }
 
-    // Make showModalImage globally available for inline onclick
     window.showModalImage = showModalImage;
 });

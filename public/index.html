@@ -351,245 +351,249 @@
         <script>
     document.addEventListener('DOMContentLoaded', function () {
         // CONTACT FORM
-   const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevents the form from reloading the page
+           const API_BASE_URL = window.location.hostname.includes("railway.app")
+            ? "https://book-arenafinal-production.up.railway.app"
+            : "http://localhost:5000";
 
-            // Gather form data
-            const contactData = {
-                name: document.getElementById('contactName').value,
-                email: document.getElementById('contactEmail').value,
-                phone: document.getElementById('contactPhone').value,
-                countryCode: document.getElementById('countryCode').value,
-                inquiryType: document.getElementById('inquiryType').value,
-                message: document.getElementById('contactMessage').value
-            };
+        // CONTACT FORM
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevents the form from reloading the page
 
-            // POST to backend
-            fetch('http://localhost:5000/api/contacts', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(contactData)
-            })
-            .then(res => res.json())
-            .then(resp => {
-                alert(resp.message || 'Thank you for contacting us!');
-                contactForm.reset();
-            })
-            .catch((err) => {
-                alert('Failed to send message: ' + err.message);
-            });
-        });
-    }
-
-
-        // BOOKING MODAL LOGIC
-        // BOOKING MODAL LOGIC
-const bookingModal = document.getElementById('bookingModal');
-if (bookingModal) {
-    document.querySelectorAll('.upcoming-events .event-btn:not([disabled])').forEach(button => {
-        button.addEventListener('click', function () {
-            const eventCard = this.closest('.event-card');
-            const eventName = eventCard?.querySelector('h3')?.innerText || '';
-            const eventDate = eventCard?.querySelector('p:nth-of-type(1)')?.innerText.replace('Date: ', '') || '';
-            const eventNameInput = document.getElementById('eventName');
-            const eventDateInput = document.getElementById('eventDate');
-            if (eventNameInput) eventNameInput.value = eventName;
-            if (eventDateInput) eventDateInput.value = eventDate;
-            bookingModal.style.display = 'flex';
-        });
-    });
-    const closeModalBtn = document.getElementById('closeModal');
-    if (closeModalBtn) closeModalBtn.addEventListener('click', function () { bookingModal.style.display = 'none'; });
-
-    // Modal Steps logic
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const step1Circle = document.getElementById('step1Circle');
-    const step2Circle = document.getElementById('step2Circle');
-    const step3Circle = document.getElementById('step3Circle');
-
-    // Step 1 -> Step 2
-    const nextStepBtn = document.getElementById('nextStep');
-    if (nextStepBtn) {
-        nextStepBtn.addEventListener('click', function () {
-            const seatingType = document.getElementById('seatingType')?.value || '';
-            const ticketAmount = document.getElementById('ticketAmount')?.value || '';
-            if (!seatingType || !ticketAmount) {
-                alert('Please select a seating type and specify the number of tickets.');
-                return;
-            }
-            step1Circle.classList.remove('active');
-            step2Circle.classList.add('active');
-            step1.style.display = 'none';
-            step2.style.display = 'block';
-        });
-    }
-    // Step 2 -> Step 1 (Back)
-    const prevStepBtn = document.getElementById('prevStep');
-    if (prevStepBtn) {
-        prevStepBtn.addEventListener('click', function () {
-            step2Circle.classList.remove('active');
-            step1Circle.classList.add('active');
-            step2.style.display = 'none';
-            step1.style.display = 'block';
-        });
-    }
-    // Calculate/display total cost
-    function calculateTotalCost() {
-        const seatingType = document.getElementById('seatingType')?.value || '';
-        const ticketAmount = parseInt(document.getElementById('ticketAmount')?.value) || 0;
-        let pricePerTicket = 0;
-        switch (seatingType) {
-            case 'VIP Premium': pricePerTicket = 5000; break;
-            case 'Lower Box': pricePerTicket = 3000; break;
-            case 'Upper Box': pricePerTicket = 1500; break;
-            case 'General Admission': pricePerTicket = 500; break;
-            default: pricePerTicket = 0;
-        }
-        const totalCost = pricePerTicket * ticketAmount;
-        let totalCostDisplay = document.getElementById('totalCostDisplay');
-        if (!totalCostDisplay && step1) {
-            totalCostDisplay = document.createElement('p');
-            totalCostDisplay.id = 'totalCostDisplay';
-            totalCostDisplay.style.marginTop = '10px';
-            totalCostDisplay.style.fontWeight = 'bold';
-            totalCostDisplay.style.color = '#3b6ae2';
-            step1.appendChild(totalCostDisplay);
-        }
-        if (totalCostDisplay) totalCostDisplay.innerText = `Total Cost: ₱${totalCost.toLocaleString()}`;
-    }
-    const ticketAmountInput = document.getElementById('ticketAmount');
-    if (ticketAmountInput) ticketAmountInput.addEventListener('input', calculateTotalCost);
-    const seatingTypeInput = document.getElementById('seatingType');
-    if (seatingTypeInput) seatingTypeInput.addEventListener('change', calculateTotalCost);
-
-    // Step 2 -> Step 3
-    const nextStep2Btn = document.getElementById('nextStep2');
-    if (nextStep2Btn) {
-        nextStep2Btn.addEventListener('click', function () {
-            const fullName = document.getElementById('fullName')?.value || '';
-            const email = document.getElementById('email')?.value || '';
-            const phone = document.getElementById('phoneNo')?.value || '';
-            const paymentMethod = document.getElementById('paymentMethod')?.value || '';
-            const idImage = document.getElementById('idImage')?.files[0];
-            if (!fullName || !email || !phone || !paymentMethod || !idImage) {
-                alert('Please fill out all fields and upload a valid ID image.');
-                return;
-            }
-            document.getElementById('reviewEventName').innerText = document.getElementById('eventName')?.value || '';
-            document.getElementById('reviewEventDate').innerText = document.getElementById('eventDate')?.value || '';
-            document.getElementById('reviewSeatingType').innerText = document.getElementById('seatingType')?.value || '';
-            document.getElementById('reviewTicketAmount').innerText = document.getElementById('ticketAmount')?.value || '';
-            document.getElementById('reviewFullName').innerText = fullName;
-            document.getElementById('reviewEmail').innerText = email;
-            document.getElementById('reviewPhoneNo').innerText = phone;
-            document.getElementById('reviewPaymentMethod').innerText = paymentMethod;
-            const seatingType = document.getElementById('seatingType')?.value || '';
-            const ticketAmount = parseInt(document.getElementById('ticketAmount')?.value) || 0;
-            let pricePerTicket = 0;
-            switch (seatingType) {
-                case 'VIP Premium': pricePerTicket = 5000; break;
-                case 'Lower Box': pricePerTicket = 3000; break;
-                case 'Upper Box': pricePerTicket = 1500; break;
-                case 'General Admission': pricePerTicket = 500; break;
-                default: pricePerTicket = 0;
-            }
-            const totalCost = pricePerTicket * ticketAmount;
-            document.getElementById('reviewTotalCost').innerText = `₱${totalCost.toLocaleString()}`;
-            step2Circle.classList.remove('active');
-            step3Circle.classList.add('active');
-            step2.style.display = 'none';
-            step3.style.display = 'block';
-        });
-    }
-    // Step 3 -> Step 2 (Back)
-    const prevStep3Btn = document.getElementById('prevStep3');
-    if (prevStep3Btn) {
-        prevStep3Btn.addEventListener('click', function () {
-            step3Circle.classList.remove('active');
-            step2Circle.classList.add('active');
-            step3.style.display = 'none';
-            step2.style.display = 'block';
-        });
-    }
-    // Image Preview for ID Image
-    const idImageInput = document.getElementById('idImage');
-    if (idImageInput) {
-        idImageInput.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            const previewContainer = document.getElementById('imagePreviewContainer');
-            const previewImage = document.getElementById('imagePreview');
-            if (file && previewContainer && previewImage) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previewImage.src = e.target.result;
-                    previewContainer.style.display = 'block';
+                // Gather form data
+                const contactData = {
+                    name: document.getElementById('contactName').value,
+                    email: document.getElementById('contactEmail').value,
+                    phone: document.getElementById('contactPhone').value,
+                    countryCode: document.getElementById('countryCode').value,
+                    inquiryType: document.getElementById('inquiryType').value,
+                    message: document.getElementById('contactMessage').value
                 };
-                reader.readAsDataURL(file);
-            } else if (previewContainer && previewImage) {
-                previewImage.src = '';
-                previewContainer.style.display = 'none';
-            }
-        });
-    }
-    // Confirm Booking (Send to backend)
-    const confirmBookingBtn = document.getElementById('confirmBooking');
-    if (confirmBookingBtn) {
-        confirmBookingBtn.addEventListener('click', function () {
-            const bookingData = {
-                eventName: document.getElementById('eventName')?.value || '',
-                eventDate: document.getElementById('eventDate')?.value || '',
-                seatingType: document.getElementById('seatingType')?.value || '',
-                ticketAmount: document.getElementById('ticketAmount')?.value || '',
-                specialRequirements: document.getElementById('specialRequirements')?.value || '',
-                fullName: document.getElementById('fullName')?.value || '',
-                email: document.getElementById('email')?.value || '',
-                phone: document.getElementById('phoneNo')?.value || '',
-                paymentMethod: document.getElementById('paymentMethod')?.value || ''
-            };
-            const idImageFile = document.getElementById('idImage')?.files[0];
-            const formData = new FormData();
-            Object.entries(bookingData).forEach(([key, val]) => formData.append(key, val));
-            if (idImageFile) formData.append('idImage', idImageFile);
 
-            // !! MAIN FIX: use full backend URL if frontend and backend run on different ports !!
-            fetch('http://localhost:5000/api/bookings', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => {
-                if (!res.ok) throw new Error('Network response was not ok');
-                return res.json();
-            })
-            .then(resp => {
-                alert(resp.message || 'Booking successful! Please check your email for confirmation and further details.');
-                const bookingForm = document.getElementById('bookingForm');
-                if (bookingForm) bookingForm.reset();
-                const previewContainer = document.getElementById('imagePreviewContainer');
-                const previewImage = document.getElementById('imagePreview');
-                if (previewImage && previewContainer) {
-                    previewImage.src = '';
-                    previewContainer.style.display = 'none';
-                }
-                step1Circle.classList.add('active');
-                step2Circle.classList.remove('active');
-                step3Circle.classList.remove('active');
-                step1.style.display = 'block';
-                step2.style.display = 'none';
-                step3.style.display = 'none';
-                bookingModal.style.display = 'none';
-                const totalCostDisplay = document.getElementById('totalCostDisplay');
-                if (totalCostDisplay) totalCostDisplay.innerText = '';
-            })
-            .catch((err) => {
-                alert('Booking failed. Please try again.\n' + (err.message || ''));
+                // POST to backend (dynamic API base URL)
+                fetch(`${API_BASE_URL}/api/contacts`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(contactData)
+                })
+                .then(res => res.json())
+                .then(resp => {
+                    alert(resp.message || 'Thank you for contacting us!');
+                    contactForm.reset();
+                })
+                .catch((err) => {
+                    alert('Failed to send message: ' + err.message);
+                });
             });
-        });
-    }
-}
+        }
+
+        // BOOKING MODAL LOGIC
+        const bookingModal = document.getElementById('bookingModal');
+        if (bookingModal) {
+            document.querySelectorAll('.upcoming-events .event-btn:not([disabled])').forEach(button => {
+                button.addEventListener('click', function () {
+                    const eventCard = this.closest('.event-card');
+                    const eventName = eventCard?.querySelector('h3')?.innerText || '';
+                    const eventDate = eventCard?.querySelector('p:nth-of-type(1)')?.innerText.replace('Date: ', '') || '';
+                    const eventNameInput = document.getElementById('eventName');
+                    const eventDateInput = document.getElementById('eventDate');
+                    if (eventNameInput) eventNameInput.value = eventName;
+                    if (eventDateInput) eventDateInput.value = eventDate;
+                    bookingModal.style.display = 'flex';
+                });
+            });
+            const closeModalBtn = document.getElementById('closeModal');
+            if (closeModalBtn) closeModalBtn.addEventListener('click', function () { bookingModal.style.display = 'none'; });
+
+            // Modal Steps logic
+            const step1 = document.getElementById('step1');
+            const step2 = document.getElementById('step2');
+            const step3 = document.getElementById('step3');
+            const step1Circle = document.getElementById('step1Circle');
+            const step2Circle = document.getElementById('step2Circle');
+            const step3Circle = document.getElementById('step3Circle');
+
+            // Step 1 -> Step 2
+            const nextStepBtn = document.getElementById('nextStep');
+            if (nextStepBtn) {
+                nextStepBtn.addEventListener('click', function () {
+                    const seatingType = document.getElementById('seatingType')?.value || '';
+                    const ticketAmount = document.getElementById('ticketAmount')?.value || '';
+                    if (!seatingType || !ticketAmount) {
+                        alert('Please select a seating type and specify the number of tickets.');
+                        return;
+                    }
+                    step1Circle.classList.remove('active');
+                    step2Circle.classList.add('active');
+                    step1.style.display = 'none';
+                    step2.style.display = 'block';
+                });
+            }
+            // Step 2 -> Step 1 (Back)
+            const prevStepBtn = document.getElementById('prevStep');
+            if (prevStepBtn) {
+                prevStepBtn.addEventListener('click', function () {
+                    step2Circle.classList.remove('active');
+                    step1Circle.classList.add('active');
+                    step2.style.display = 'none';
+                    step1.style.display = 'block';
+                });
+            }
+            // Calculate/display total cost
+            function calculateTotalCost() {
+                const seatingType = document.getElementById('seatingType')?.value || '';
+                const ticketAmount = parseInt(document.getElementById('ticketAmount')?.value) || 0;
+                let pricePerTicket = 0;
+                switch (seatingType) {
+                    case 'VIP Premium': pricePerTicket = 5000; break;
+                    case 'Lower Box': pricePerTicket = 3000; break;
+                    case 'Upper Box': pricePerTicket = 1500; break;
+                    case 'General Admission': pricePerTicket = 500; break;
+                    default: pricePerTicket = 0;
+                }
+                const totalCost = pricePerTicket * ticketAmount;
+                let totalCostDisplay = document.getElementById('totalCostDisplay');
+                if (!totalCostDisplay && step1) {
+                    totalCostDisplay = document.createElement('p');
+                    totalCostDisplay.id = 'totalCostDisplay';
+                    totalCostDisplay.style.marginTop = '10px';
+                    totalCostDisplay.style.fontWeight = 'bold';
+                    totalCostDisplay.style.color = '#3b6ae2';
+                    step1.appendChild(totalCostDisplay);
+                }
+                if (totalCostDisplay) totalCostDisplay.innerText = `Total Cost: ₱${totalCost.toLocaleString()}`;
+            }
+            const ticketAmountInput = document.getElementById('ticketAmount');
+            if (ticketAmountInput) ticketAmountInput.addEventListener('input', calculateTotalCost);
+            const seatingTypeInput = document.getElementById('seatingType');
+            if (seatingTypeInput) seatingTypeInput.addEventListener('change', calculateTotalCost);
+
+            // Step 2 -> Step 3
+            const nextStep2Btn = document.getElementById('nextStep2');
+            if (nextStep2Btn) {
+                nextStep2Btn.addEventListener('click', function () {
+                    const fullName = document.getElementById('fullName')?.value || '';
+                    const email = document.getElementById('email')?.value || '';
+                    const phone = document.getElementById('phoneNo')?.value || '';
+                    const paymentMethod = document.getElementById('paymentMethod')?.value || '';
+                    const idImage = document.getElementById('idImage')?.files[0];
+                    if (!fullName || !email || !phone || !paymentMethod || !idImage) {
+                        alert('Please fill out all fields and upload a valid ID image.');
+                        return;
+                    }
+                    document.getElementById('reviewEventName').innerText = document.getElementById('eventName')?.value || '';
+                    document.getElementById('reviewEventDate').innerText = document.getElementById('eventDate')?.value || '';
+                    document.getElementById('reviewSeatingType').innerText = document.getElementById('seatingType')?.value || '';
+                    document.getElementById('reviewTicketAmount').innerText = document.getElementById('ticketAmount')?.value || '';
+                    document.getElementById('reviewFullName').innerText = fullName;
+                    document.getElementById('reviewEmail').innerText = email;
+                    document.getElementById('reviewPhoneNo').innerText = phone;
+                    document.getElementById('reviewPaymentMethod').innerText = paymentMethod;
+                    const seatingType = document.getElementById('seatingType')?.value || '';
+                    const ticketAmount = parseInt(document.getElementById('ticketAmount')?.value) || 0;
+                    let pricePerTicket = 0;
+                    switch (seatingType) {
+                        case 'VIP Premium': pricePerTicket = 5000; break;
+                        case 'Lower Box': pricePerTicket = 3000; break;
+                        case 'Upper Box': pricePerTicket = 1500; break;
+                        case 'General Admission': pricePerTicket = 500; break;
+                        default: pricePerTicket = 0;
+                    }
+                    const totalCost = pricePerTicket * ticketAmount;
+                    document.getElementById('reviewTotalCost').innerText = `₱${totalCost.toLocaleString()}`;
+                    step2Circle.classList.remove('active');
+                    step3Circle.classList.add('active');
+                    step2.style.display = 'none';
+                    step3.style.display = 'block';
+                });
+            }
+            // Step 3 -> Step 2 (Back)
+            const prevStep3Btn = document.getElementById('prevStep3');
+            if (prevStep3Btn) {
+                prevStep3Btn.addEventListener('click', function () {
+                    step3Circle.classList.remove('active');
+                    step2Circle.classList.add('active');
+                    step3.style.display = 'none';
+                    step2.style.display = 'block';
+                });
+            }
+            // Image Preview for ID Image
+            const idImageInput = document.getElementById('idImage');
+            if (idImageInput) {
+                idImageInput.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    const previewImage = document.getElementById('imagePreview');
+                    if (file && previewContainer && previewImage) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            previewImage.src = e.target.result;
+                            previewContainer.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (previewContainer && previewImage) {
+                        previewImage.src = '';
+                        previewContainer.style.display = 'none';
+                    }
+                });
+            }
+            // Confirm Booking (Send to backend)
+            const confirmBookingBtn = document.getElementById('confirmBooking');
+            if (confirmBookingBtn) {
+                confirmBookingBtn.addEventListener('click', function () {
+                    const bookingData = {
+                        eventName: document.getElementById('eventName')?.value || '',
+                        eventDate: document.getElementById('eventDate')?.value || '',
+                        seatingType: document.getElementById('seatingType')?.value || '',
+                        ticketAmount: document.getElementById('ticketAmount')?.value || '',
+                        specialRequirements: document.getElementById('specialRequirements')?.value || '',
+                        fullName: document.getElementById('fullName')?.value || '',
+                        email: document.getElementById('email')?.value || '',
+                        phone: document.getElementById('phoneNo')?.value || '',
+                        paymentMethod: document.getElementById('paymentMethod')?.value || ''
+                    };
+                    const idImageFile = document.getElementById('idImage')?.files[0];
+                    const formData = new FormData();
+                    Object.entries(bookingData).forEach(([key, val]) => formData.append(key, val));
+                    if (idImageFile) formData.append('idImage', idImageFile);
+
+                    // Use dynamic API base URL for bookings
+                    fetch(`${API_BASE_URL}/api/bookings`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Network response was not ok');
+                        return res.json();
+                    })
+                    .then(resp => {
+                        alert(resp.message || 'Booking successful! Please check your email for confirmation and further details.');
+                        const bookingForm = document.getElementById('bookingForm');
+                        if (bookingForm) bookingForm.reset();
+                        const previewContainer = document.getElementById('imagePreviewContainer');
+                        const previewImage = document.getElementById('imagePreview');
+                        if (previewImage && previewContainer) {
+                            previewImage.src = '';
+                            previewContainer.style.display = 'none';
+                        }
+                        step1Circle.classList.add('active');
+                        step2Circle.classList.remove('active');
+                        step3Circle.classList.remove('active');
+                        step1.style.display = 'block';
+                        step2.style.display = 'none';
+                        step3.style.display = 'none';
+                        bookingModal.style.display = 'none';
+                        const totalCostDisplay = document.getElementById('totalCostDisplay');
+                        if (totalCostDisplay) totalCostDisplay.innerText = '';
+                    })
+                    .catch((err) => {
+                        alert('Booking failed. Please try again.\n' + (err.message || ''));
+                    });
+                });
+            }
+        }
+
 
         // Other UI scripts (nav highlight, smooth scroll, etc.) can remain the same,
         // but wrap DOM element access and listeners in similar null checks if you edit them.
