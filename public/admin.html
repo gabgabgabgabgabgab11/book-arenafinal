@@ -2,117 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Philippine Arena Bookings</title>
-    <link href="https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Nunito', Arial, sans-serif;
-            background: #f4f5fa;
-        }
-        .admin-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 32px 12px;
-        }
-        .admin-title {
-            text-align: center;
-            font-size: 2.3rem;
-            font-weight: 900;
-            color: #3b6ae2;
-            margin-top: 24px;
-        }
-        .admin-table-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 16px rgba(60,80,150,0.09);
-            padding: 28px;
-            margin-top: 28px;
-            overflow-x: auto;
-        }
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1.04rem;
-        }
-        .admin-table th,
-        .admin-table td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #eaeaea;
-        }
-        .admin-table th {
-            background: #f3f6fa;
-            color: #1b2a48;
-            font-weight: 700;
-            text-align: left;
-        }
-        .admin-table tbody tr:hover {
-            background: #f5f8fd;
-        }
-        .admin-table td {
-            color: #303050;
-        }
-        .approved {
-            color: #0baf60;
-            font-weight: bold;
-        }
-        .pending {
-            color: #d49e19;
-            font-weight: bold;
-        }
-        .rejected {
-            color: #d44819;
-            font-weight: bold;
-        }
-        .admin-nav {
-            text-align: right;
-            margin-bottom: 2px;
-        }
-        .admin-nav a {
-            color: #3b6ae2;
-            text-decoration: none;
-            font-weight: bold;
-            margin-left: 22px;
-        }
-        .admin-nav a:hover {
-            text-decoration: underline;
-        }
-        .admin-logo-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #3b6ae2;
-        }
-        .admin-logo-title img {
-            width: 40px;
-        }
-        @media (max-width: 700px) {
-            .admin-table th, .admin-table td { font-size: 0.92rem; padding: 6px 2px; }
-            .admin-title { font-size: 1.3rem; }
-            .admin-container { padding: 10px 2px; }
-        }
-    </style>
+    <title>Philippine Arena Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-    <header style="background: #fff; box-shadow: 0 1px 4px #ececec;">
-        <div class="admin-logo-title" style="padding: 12px 18px;">
-            <img src="img/Philippine_Arena_Logo.svg" alt="Logo">
-            Philippine Arena <span style="color:#333;">Admin</span>
-        </div>
-        <div class="admin-nav">
-            <a href="index.html">Back to Main Site</a>
-        </div>
-    </header>
-    <div class="admin-container">
-        <div>
-            <h1 class="admin-title">All Bookings</h1>
-        </div>
-        <div class="admin-table-container">
-            <table class="admin-table" id="bookingsTable">
+    <!-- Navigation -->
+    <nav class="admin-nav" style="padding: 16px; font-size: 1.2em;">
+        <span style="font-weight: bold; color: #1E40AF;">Philippine Arena</span> Admin
+        <a href="/" style="margin-left: 22px;">Back to Main Site</a>
+    </nav>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" style="display:none;position:fixed;z-index:10000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
+        <form id="loginForm" style="background:#fff;padding:30px; border-radius:12px; box-shadow:0 4px 24px #0002; display:flex; flex-direction:column; min-width:300px;">
+            <h2 style="text-align:center; margin-bottom:20px;">Admin Login</h2>
+            <input id="username" type="text" placeholder="Username" autocomplete="username" required style="margin-bottom:12px;">
+            <input id="password" type="password" placeholder="Password" autocomplete="current-password" required style="margin-bottom:12px;">
+            <button type="submit" style="padding:8px;background:#1E40AF;color:#fff;border:none;border-radius:4px;cursor:pointer;">Login</button>
+            <span id="errorMessage" style="color:#d44;display:none;margin-top:8px;text-align:center;">Invalid credentials.</span>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <main style="padding: 30px; max-width: 1200px; margin: 0 auto;">
+        <h1 style="text-align:center;color:#2563eb;">All Bookings</h1>
+        <div style="overflow-x:auto;background:#fff;border-radius:16px;box-shadow:0 2px 16px #0001;padding:28px;">
+            <table style="width:100%;border-collapse:collapse;min-width:900px;">
                 <thead>
-                    <tr>
+                    <tr style="background:#f3f6fa;">
                         <th>#</th>
                         <th>Booking ID</th>
                         <th>Event Name</th>
@@ -129,13 +47,12 @@
                     </tr>
                 </thead>
                 <tbody id="bookingsTableBody">
-                    <tr>
-                        <td colspan="13" style="text-align:center; color:#aaa;">Loading...</td>
-                    </tr>
+                    <tr><td colspan="13" style="text-align:center; color:#aaa;">Loading...</td></tr>
                 </tbody>
             </table>
         </div>
-    </div>
+    </main>
+
     <script src="admin.js"></script>
 </body>
 </html>

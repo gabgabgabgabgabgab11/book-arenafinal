@@ -18,15 +18,24 @@ const dbConfig = {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.options('*', cors());
 
-// Multer for file uploads (to ../uploads)
-const upload = multer({
-  dest: path.join(__dirname, '..', 'uploads'),
+// --- Multer setup: save images with correct extension ---
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '..', 'uploads'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+    cb(null, uniqueName);
+  }
 });
+const upload = multer({ storage });
 
-// === API ROUTES (Always above static/Spa fallback!) ===
+// === API ROUTES ===
 
-// CONTACTS API
+// CONTACTS API (unchanged)
 app.post('/api/contacts', async (req, res) => {
   const { name, email, phone, countryCode, inquiryType, message } = req.body;
   if (!name || !email || !phone || !countryCode || !inquiryType || !message) {
@@ -54,7 +63,6 @@ app.post('/api/contacts', async (req, res) => {
 app.get('/api/contacts', async (req, res) => {
   try {
     const db = await mysql.createConnection(dbConfig);
-    // Adjust table name/columns as needed
     const [rows] = await db.query('SELECT * FROM contacts ORDER BY id DESC');
     await db.end();
     res.json(rows);
@@ -91,7 +99,7 @@ app.post('/api/bookings', upload.single('idImage'), async (req, res) => {
     ) {
       return res.status(400).json({ message: 'All fields including ID image are required.' });
     }
-    const idImagePath = req.file.path;
+    const idImagePath = req.file.filename; // store just the filename, not full path
 
     const db = await mysql.createConnection(dbConfig);
 
@@ -138,24 +146,30 @@ app.post('/api/bookings', upload.single('idImage'), async (req, res) => {
   }
 });
 
-// GET all bookings
+// GET all bookings (using stored procedure with joins)
 app.get('/api/bookings', async (req, res) => {
   try {
     const db = await mysql.createConnection(dbConfig);
-    // Adjust table name/columns as needed
-    const [rows] = await db.query('SELECT * FROM bookings ORDER BY id DESC');
+    const [resultSets] = await db.query('CALL get_full_bookings()');
     await db.end();
-    res.json(rows);
+    const rows = resultSets[0];
+
+    // Make id_image browser-friendly
+    const bookings = rows.map(b => ({
+      ...b,
+      id_image: b.id_image ? '/uploads/' + b.id_image.replace(/^.*[\\\/]/, '') : ''
+    }));
+
+    res.json(bookings);
   } catch (err) {
     console.error('Get bookings error:', err);
     res.status(500).json({ message: 'Failed to get bookings.' });
   }
 });
 
-// VENUE RENTAL API
+// VENUE RENTAL API (unchanged)
 app.post('/api/venue-rental', async (req, res) => {
   const data = req.body;
-  // Check required fields (add more checks as needed)
   const required = [
     'companyName', 'orgType', 'businessAddress', 'taxId', 'contactPerson', 'positionTitle', 'email',
     'phone', 'companyBackground', 'eventTitle', 'eventType', 'eventDescription', 'eventDuration',
@@ -198,7 +212,6 @@ app.post('/api/venue-rental', async (req, res) => {
 app.get('/api/venue-rental', async (req, res) => {
   try {
     const db = await mysql.createConnection(dbConfig);
-    // Adjust table name/columns as needed
     const [rows] = await db.query('SELECT * FROM venue_rental_applications ORDER BY id DESC');
     await db.end();
     res.json(rows);
@@ -209,6 +222,7 @@ app.get('/api/venue-rental', async (req, res) => {
 });
 
 // === STATIC FILES (after API routes) ===
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // === SPA fallback (must be last!) ===
