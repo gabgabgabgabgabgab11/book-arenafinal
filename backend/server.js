@@ -1,4 +1,4 @@
-require('dotenv').config(); // Ensure dotenv is loaded at the very top
+require('dotenv').config();
 
 const express = require('express');
 const multer = require('multer');
@@ -9,7 +9,6 @@ const cors = require('cors');
 const app = express();
 
 // === CONFIG ===
-// Dynamically select config: use Railway env vars if present, else fallback to local
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
@@ -39,7 +38,7 @@ const upload = multer({ storage });
 
 // === API ROUTES ===
 
-// CONTACTS API (unchanged)
+// CONTACTS API
 app.post('/api/contacts', async (req, res) => {
   const { name, email, phone, countryCode, inquiryType, message } = req.body;
   if (!name || !email || !phone || !countryCode || !inquiryType || !message) {
@@ -73,6 +72,28 @@ app.get('/api/contacts', async (req, res) => {
   } catch (err) {
     console.error('Get contacts error:', err);
     res.status(500).json({ message: 'Failed to get contacts.' });
+  }
+});
+
+// PUT update contact by ID (uses stored procedure)
+app.put('/api/contacts/:id', async (req, res) => {
+  const id = req.params.id;
+  const { name, email, phone, inquiryType, message } = req.body;
+  try {
+    const db = await mysql.createConnection(dbConfig);
+    await db.query('CALL update_contact(?,?,?,?,?,?)', [
+      id,
+      name,
+      email,
+      phone,
+      inquiryType,
+      message
+    ]);
+    await db.end();
+    res.json({ message: 'Contact updated.' });
+  } catch (err) {
+    console.error('Update contact error:', err);
+    res.status(500).json({ message: 'Failed to update contact.' });
   }
 });
 
@@ -171,6 +192,27 @@ app.get('/api/bookings', async (req, res) => {
   }
 });
 
+// PUT update booking by ID (uses stored procedure, normalized tables)
+app.put('/api/bookings/:id', async (req, res) => {
+  const id = req.params.id;
+  const {
+     special_requirements
+   
+  } = req.body;
+  try {
+    const db = await mysql.createConnection(dbConfig);
+    await db.query('CALL update_booking_special_req(?,?)', [
+      id,
+      special_requirements,
+    ]);
+    await db.end();
+    res.json({ message: 'Booking updated.' });
+  } catch (err) {
+    console.error('Update booking error:', err);
+    res.status(500).json({ message: 'Failed to update booking.' });
+  }
+});
+
 // Delete booking by ID
 app.delete('/api/bookings/:id', async (req, res) => {
   const bookingId = req.params.id;
@@ -185,7 +227,7 @@ app.delete('/api/bookings/:id', async (req, res) => {
   }
 });
 
-// VENUE RENTAL API (unchanged)
+// VENUE RENTAL API
 app.post('/api/venue-rental', async (req, res) => {
   const data = req.body;
   const required = [
@@ -236,6 +278,60 @@ app.get('/api/venue-rental', async (req, res) => {
   } catch (err) {
     console.error('Get venue rentals error:', err);
     res.status(500).json({ message: 'Failed to get venue rental applications.' });
+  }
+});
+
+// PUT update venue rental by ID (uses stored procedure)
+app.put('/api/venue-rental/:id', async (req, res) => {
+  const id = req.params.id;
+  const {
+    company_name, contact_person, email, phone, event_title, event_type,
+    preferred_date_1, preferred_date_2, preferred_date_3,
+    expected_attendance, stage_req, sound_req, lighting_req,
+    catering_req, security_req
+  } = req.body;
+  try {
+    const db = await mysql.createConnection(dbConfig);
+    await db.query(
+      'CALL update_venue_rental(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      [
+        id,
+        company_name,
+        contact_person,
+        email,
+        phone,
+        event_title,
+        event_type,
+        preferred_date_1,
+        preferred_date_2,
+        preferred_date_3,
+        expected_attendance,
+        stage_req,
+        sound_req,
+        lighting_req,
+        catering_req,
+        security_req
+      ]
+    );
+    await db.end();
+    res.json({ message: 'Venue rental updated.' });
+  } catch (err) {
+    console.error('Update venue rental error:', err);
+    res.status(500).json({ message: 'Failed to update venue rental application.' });
+  }
+});
+
+// Delete venue rental by ID
+app.delete('/api/venue-rental/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const db = await mysql.createConnection(dbConfig);
+    await db.query('DELETE FROM venue_rental_applications WHERE id = ?', [id]);
+    await db.end();
+    res.json({ message: 'Venue rental deleted.' });
+  } catch (err) {
+    console.error('Delete venue rental error:', err);
+    res.status(500).json({ message: 'Failed to delete venue rental application.' });
   }
 });
 

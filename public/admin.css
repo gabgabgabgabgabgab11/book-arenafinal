@@ -62,6 +62,9 @@ h1 {
     font-weight: 800;
     letter-spacing: 1px;
     margin-bottom: 20px;
+    text-align: center;
+    color: #2563eb;
+    margin-top: 40px;
 }
 
 .admin-table-container {
@@ -115,37 +118,139 @@ h1 {
 }
 
 .admin-table td, .admin-table th {
-    /* Widen all columns & allow wrapping */
     min-width: 120px;
     max-width: 340px;
 }
-
-/* Delete button styling for ALL tables */
-.delete-booking-btn,
-.delete-contact-btn,
-.delete-venue-btn {
-    color: #fff;
-    background: #ef4444;
-    border: none;
-    padding: 7px 13px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.98em;
-    transition: background 0.12s, box-shadow 0.12s;
-    box-shadow: 0 1px 4px #d44a2f22;
+ 
+.action-btn {
+    display: block;
+    width: 100px;
+    margin: 6px auto;
+    font-size: 1.05em;
+    font-weight: 700;
+    border-radius: 9px;
+    border: 2px solid #222;
+    transition: background 0.12s, color 0.12s;
+    box-shadow: 0 1px 4px #0001;
     outline: none;
-    margin: 0 2px;
-    display: inline-block;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    padding: 7px 0;
 }
 
-.delete-booking-btn:hover,
-.delete-contact-btn:hover,
-.delete-venue-btn:hover {
+.view-btn {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.view-btn:hover {
+    background: #143a7c;
+    border-color: #143a7c;
+}
+
+.edit-btn {
+    background: #fbbf24;
+    color: #222;
+    border-color: #fbbf24;
+}
+
+.edit-btn:hover {
+    background: #b8860b;
+    border-color: #b8860b;
+    color: #fff;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+}
+
+.delete-btn:hover {
     background: #b91c1c;
-    box-shadow: 0 2px 12px #ef444455;
+    border-color: #b91c1c;
 }
 
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: opacity 0.12s;
+}
+
+.custom-modal-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px 36px;
+    max-width: 420px;
+    min-width: 280px;
+    width: 100%;
+    box-shadow: 0 8px 32px #0002;
+    color: #222;
+    font-size: 1.08em;
+    position: relative;
+}
+
+.custom-modal h2 {
+    color: #2563eb;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.custom-modal-close {
+    position: absolute;
+    top: 36px;
+    right: 56px;
+    color: #222;
+    font-size: 2.8em;
+    cursor: pointer;
+    z-index: 20;
+    font-weight: 700;
+    transition: color 0.15s;
+}
+
+.custom-modal-close:hover {
+    color: #ef4444;
+}
+
+.custom-modal-img {
+    max-width: 85vw;
+    max-height: 85vh;
+    border: 6px solid white;
+    border-radius: 10px;
+    background: #fff;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 4px 32px #0004;
+}
+
+#venueEditModal .custom-modal-content,
+#venueViewModal .custom-modal-content {
+    max-height: 75vh;
+    overflow-y: auto;
+ 
+    overflow-x: auto;
+}
+
+#venueEditModal .custom-modal-content::-webkit-scrollbar,
+#venueViewModal .custom-modal-content::-webkit-scrollbar {
+    width: 8px;
+    background: #f2f2f2;
+}
+#venueEditModal .custom-modal-content::-webkit-scrollbar-thumb,
+#venueViewModal .custom-modal-content::-webkit-scrollbar-thumb {
+    background: #b6c6e7;
+    border-radius: 6px;
+}
 @media (max-width: 1700px) {
     .admin-table, .admin-table th, .admin-table td {
         font-size: 0.98em;

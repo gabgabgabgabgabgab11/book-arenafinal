@@ -74,16 +74,10 @@
                 <div class="event-img-container">
                     <img src="img/500229890_1135987318574466_5159926729709100826_n.jpg" alt="BLACKPINK" class="event-img">
                 </div>
-                <h3>Concert: BLACKPINK</h3>
+                 <h3>Concert: BLACKPINK</h3>
                 <p>Date: November 22, 2025 - November 23, 2025</p>
                 <p>Experience the electrifying return of BLACKPINK as they bring their Deadline World Tour to the Philippine Arena in Bulacan on November 22 and 23, 2025. Join Jisoo, Jennie, Rosé, and Lisa for the ultimate K-pop concert experience!</p>
-                <div style="position: absolute; left: 20px; bottom: 20px;">
-                    <button class="event-btn" style="background: #ccc; color: #888; cursor: not-allowed;" disabled>Book Now</button>
-                    <span class="booking-unavailable-label" style="display: none; position: absolute; top: 50%; left: 105%;
-                     transform: translateY(-50%); background: rgba(59,106,226,0.95); color: #fff; padding: 6px 16px;
-                      border-radius: 6px; font-size: 15px; white-space: nowrap; pointer-events: none; z-index: 2; min-width: 220px; 
-                      text-align: left;">Booking unavailable: Puregold OPMCON booking ongoing</span>
-                </div>
+            <button class="event-btn" style="position: absolute; left: 20px; bottom: 20px;">Book Now</button>      
             </div>
 
             <!-- CFO International Event Card (Booking Disabled) -->
@@ -568,7 +562,7 @@
                         return res.json();
                     })
                     .then(resp => {
-                        alert(resp.message || 'Booking successful! Please check your email for confirmation and further details.');
+                        alert(resp.message || 'Please check your email for confirmation and further details.');
                         const bookingForm = document.getElementById('bookingForm');
                         if (bookingForm) bookingForm.reset();
                         const previewContainer = document.getElementById('imagePreviewContainer');

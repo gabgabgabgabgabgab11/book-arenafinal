@@ -280,3 +280,107 @@ BEGIN
   SELECT stid AS id;
 END $$
 DELIMITER ;
+
+
+-- For updating a booking
+DELIMITER //
+CREATE PROCEDURE update_booking(
+  IN p_booking_id INT,
+  IN p_event_name VARCHAR(255),
+  IN p_ticket_amount INT,
+  IN p_special_requirements TEXT,
+  IN p_user_full_name VARCHAR(255),
+  IN p_user_email VARCHAR(255),
+  IN p_user_phone VARCHAR(64),
+  IN p_payment_method VARCHAR(64),
+  IN p_seating_type VARCHAR(64)
+)
+BEGIN
+  -- Update user info
+  UPDATE users
+    INNER JOIN bookings ON bookings.user_id = users.id
+    SET users.full_name = p_user_full_name,
+        users.email = p_user_email,
+        users.phone = p_user_phone
+    WHERE bookings.id = p_booking_id;
+
+  -- Insert/find payment method
+  INSERT IGNORE INTO payment_methods (method) VALUES (p_payment_method);
+  SET @payment_method_id = (SELECT id FROM payment_methods WHERE method = p_payment_method LIMIT 1);
+
+  -- Insert/find seating type
+  INSERT IGNORE INTO seating_types (type) VALUES (p_seating_type);
+  SET @seating_type_id = (SELECT id FROM seating_types WHERE type = p_seating_type LIMIT 1);
+
+  -- Update booking
+  UPDATE bookings
+    SET event_name = p_event_name,
+        ticket_amount = p_ticket_amount,
+        special_requirements = p_special_requirements,
+        payment_method_id = @payment_method_id,
+        seating_type_id = @seating_type_id
+    WHERE id = p_booking_id;
+END //
+DELIMITER ;
+
+-- For updating a contact
+DELIMITER //
+CREATE PROCEDURE update_contact(
+  IN p_id INT,
+  IN p_name VARCHAR(255),
+  IN p_email VARCHAR(255),
+  IN p_phone VARCHAR(255),
+  IN p_inquiryType VARCHAR(255),
+  IN p_message TEXT
+)
+BEGIN
+  UPDATE contacts
+  SET name = p_name,
+      email = p_email,
+      phone = p_phone,
+      inquiry_type = p_inquiryType,
+      message = p_message
+  WHERE id = p_id;
+END //
+DELIMITER ;
+
+-- For updating a venue rental
+DELIMITER //
+CREATE PROCEDURE update_venue_rental(
+  IN p_id INT,
+  IN p_company_name VARCHAR(255),
+  IN p_contact_person VARCHAR(255),
+  IN p_email VARCHAR(255),
+  IN p_phone VARCHAR(255),
+  IN p_event_title VARCHAR(255),
+  IN p_event_type VARCHAR(255),
+  IN p_preferred_date_1 DATE,
+  IN p_preferred_date_2 DATE,
+  IN p_preferred_date_3 DATE,
+  IN p_expected_attendance INT,
+  IN p_stage_req VARCHAR(255),
+  IN p_sound_req VARCHAR(255),
+  IN p_lighting_req VARCHAR(255),
+  IN p_catering_req VARCHAR(255),
+  IN p_security_req VARCHAR(255)
+)
+BEGIN
+  UPDATE venue_rental_applications
+  SET company_name = p_company_name,
+      contact_person = p_contact_person,
+      email = p_email,
+      phone = p_phone,
+      event_title = p_event_title,
+      event_type = p_event_type,
+      preferred_date_1 = p_preferred_date_1,
+      preferred_date_2 = p_preferred_date_2,
+      preferred_date_3 = p_preferred_date_3,
+      expected_attendance = p_expected_attendance,
+      stage_req = p_stage_req,
+      sound_req = p_sound_req,
+      lighting_req = p_lighting_req,
+      catering_req = p_catering_req,
+      security_req = p_security_req
+  WHERE id = p_id;
+END //
+DELIMITER ;
